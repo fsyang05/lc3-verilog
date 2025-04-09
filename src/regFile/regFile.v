@@ -8,6 +8,7 @@
 // Fetch multiple reg?
 
 // verilog_format: off
+// TODO: testbench
 module regFile (
     input clk,
     input [15:0]  indata,
@@ -58,4 +59,3 @@ module regFile (
         $display("Data written");
     end
 endmodule
-// verilog_format: on 
