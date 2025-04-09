@@ -6,13 +6,14 @@
 // Accepts new data and writes to reg
 // Outputs current reg data
 
-module reg (
-    input reg   [15:0]  indata;
+// verilog_format: off
+module RegFile (
+    input reg   [15:0]  indata,
     input reg   [ 2:0]  write_reg, out_reg,
-    output reg  [15:0]  outdata;
+    output reg  [15:0]  outdata
 );
     reg [15:0] R0, R1, R2, R3, R4, R5, R6, R7;
-    wire [7:0] write               // reg select
+    wire [7:0] write;               // reg select
     integer in_select;
     integer out_select;
     
@@ -49,5 +50,4 @@ module reg (
         endcase
     end
 endmodule
-    
-    
+// verilog_format: on 
