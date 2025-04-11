@@ -19,6 +19,8 @@ module alu (
 );
     reg [15:0] alu_out;
     assign out = alu_out;
+
+    // conditional codes Negative, Zero, Positive
     assign nzp[1] = !(^out); // unary xnor
     assign nzp[2] = out[15]; // MSB
     assign nzp[0] = !out[15];
