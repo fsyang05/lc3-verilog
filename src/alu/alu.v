@@ -12,12 +12,12 @@
 
 module alu (
     input clk,
-    input   [15:0]  a, b,
+    input signed  [15:0]  a, b,
     input   [ 3:0]  opcode,
     output  [15:0]  out,
     output  [ 2:0]  nzp
 );
-    reg [15:0] alu_out;
+    reg signed [15:0] alu_out;
     assign out = alu_out;
 
     // conditional codes Negative, Zero, Positive

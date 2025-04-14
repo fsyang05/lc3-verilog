@@ -9,9 +9,9 @@
 
 module alu_tb;
     reg clk;
-    reg [15:0] a, b;
+    reg signed [15:0] a, b;
     reg [3:0] opcode;
-    wire [15:0] out;
+    wire signed [15:0] out;
     wire [2:0] nzp;
 
     // Instantiate ALU
