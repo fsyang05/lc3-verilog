@@ -11,14 +11,13 @@ module regFile (
     input clk,
     input [15:0]  inputData,
     input [ 2:0]  DR, SR1, SR2,
-    output [15:0]  outputData
+    output [15:0]  outputData1, outputData2
 );
 
     // declare registers, writeEnable, initiate to 0
-    // TODO: initiate readVector
     reg [15:0] R0, R1, R2, R3, R4, R5, R6, R7;
-    reg [7:0] writeEnable;
-    reg [7:0] readEnable;
+    reg [15:0] oD1, oD2;
+    reg [ 7:0] writeEnable;
 
     initial begin
         {R0,R1,R2,R3,R4,R5,R6,R7} = 16'b0;
@@ -26,68 +25,92 @@ module regFile (
     end
 
     // convert DR, SR1, SR2 to writeEnable, readVector
-    integer tempDR, tempSR1, tempSR2;
-    assign writeEnable[temp] = 1;
+    integer intDR, intSR1, intSR2;
+    assign outputData1 = oD1;
+    assign outputData2 = oD2;
 
+    // unclocked, simultaneous assignment
     always @(DR, SR1, SR2)
     begin
-        tempDR = DR;
-        tempSR1 = SR1;
-        tempSR2 = SR2;
+        // reset writeEnable
+        writeEnable = 0;
+
+        // integer conversion
+        intDR = DR;
+        intSR1 = SR1;
+        intSR2 = SR2;
+//        $display("intDR: %d", intDR);
+        writeEnable[intDR] = 1'b1;
+
+        // check DR, SR1, SR2, writeEnable update
+//        $display("UPDATE DR: %d, SR1: %d, SR2: %d", DR, SR1, SR2);
+//        $display("UPDATE writeEnable: %d %d %d %d %d %d %d %d",
+//            writeEnable[0], writeEnable[1], writeEnable[2], writeEnable[3],
+//            writeEnable[4], writeEnable[5], writeEnable[6], writeEnable[7]);
     end
 
-    // TODO: fix this
-    always @(posedge clk)
+    //
+    // Combinational assignment. Update outputData if SR1, SR2
+    // are changed. Else, leave as is.
+    //
+    always @(*)
     begin
-        in_select <= write_reg;
-        write[in_select] <= 1;
-        $display("WRITE_REG: %d", write_reg);
-        $display("IN_SELECT: %d", in_select);
-
-        case (out_select)
-            3'h0    :   outreg = R0;
-            3'h1    :   outreg = R1;
-            3'h2    :   outreg = R2;
-            3'h3    :   outreg = R3;
-            3'h4    :   outreg = R4;
-            3'h5    :   outreg = R5;
-            3'h6    :   outreg = R6;
-            3'h7    :   outreg = R7;
-            default :   outreg = 0;
+        case (SR1)
+            3'b000      :       oD1 = R0;
+            3'b001      :       oD1 = R1;
+            3'b010      :       oD1 = R2;
+            3'b011      :       oD1 = R3;
+            3'b100      :       oD1 = R4;
+            3'b101      :       oD1 = R5;
+            3'b110      :       oD1 = R6;
+            3'b111      :       oD1 = R7;
+            default     :
+                begin
+                    $display("ERROR: Invalid SR1 code.");
+                    oD1 = 0;
+                end
         endcase
 
-//        $display("WRITEENABLE: %d %d %d %d %d %d %d %d", write[0], write[1], write[2], write[3], write[4], write[5], write[6], write[7]);
-
-        R0 <= write[0]? indata : R0;
-        R1 <= write[1]? indata : R1;
-        R2 <= write[2]? indata : R2;
-        R3 <= write[3]? indata : R3;
-        R4 <= write[4]? indata : R4;
-        R5 <= write[5]? indata : R5;
-        R6 <= write[6]? indata : R6;
-        R7 <= write[7]? indata : R7;
-
-        // reset write
-        write = 0;
-
-//        $display("Data written");
+        case (SR2)
+            3'b000      :       oD2 = R0;
+            3'b001      :       oD2 = R1;
+            3'b010      :       oD2 = R2;
+            3'b011      :       oD2 = R3;
+            3'b100      :       oD2 = R4;
+            3'b101      :       oD2 = R5;
+            3'b110      :       oD2 = R6;
+            3'b111      :       oD2 = R7;
+            default
+                begin
+                    $display("ERROR: Invalid SR2 code.");
+                    oD2 = 0;
+                end
+        endcase
     end
-endmodule
 
-module registers (
-    input   clk,
-    input   [15:0] iR0, iR1, iR2, iR3, iR4, iR5, iR6, iR7,
-    output  [15:0] oR0, oR1, oR2, oR3, oR4, oR5, oR6, oR7
-);
+    //
+    // Update ALL registers on every clock cycle.
+    // Use writeEnable as MUX select.
+    //
     always @(posedge clk)
     begin
-        oR0 <= iR0;
-        oR1 <= iR1;
-        oR2 <= iR2;
-        oR3 <= iR3;
-        oR4 <= iR4;
-        oR5 <= iR5;
-        oR6 <= iR6;
-        oR7 <= iR7;
+        // check writeEnable
+//        $display("READ writeEnable: %d %d %d %d %d %d %d %d", writeEnable[0], writeEnable[1],
+//            writeEnable[2], writeEnable[3], writeEnable[4], writeEnable[5], writeEnable[6],
+//            writeEnable[7]);
+
+        // update ALL registers, using writeEnable
+        // doesn't matter if blocking or unblocking
+        R0 <= writeEnable[0] ? inputData : R0;
+        R1 <= writeEnable[1] ? inputData : R1;
+        R2 <= writeEnable[2] ? inputData : R2;
+        R3 <= writeEnable[3] ? inputData : R3;
+        R4 <= writeEnable[4] ? inputData : R4;
+        R5 <= writeEnable[5] ? inputData : R5;
+        R6 <= writeEnable[6] ? inputData : R6;
+        R7 <= writeEnable[7] ? inputData : R7;
+
+        // display state
+        $display("Registers: %d %d %d %d %d %d %d %d", R0, R1, R2, R3, R4, R5, R6, R7);
     end
 endmodule

@@ -7,19 +7,21 @@
 module regFile_tb;
     // input regs
     reg clk;
-    reg [15:0] indata;
-    reg [2:0] write_reg, out_reg;
+    reg [15:0] inputData;
+    reg [ 2:0] DR, SR1, SR2;
 
     // output wire
-    wire [15:0] outdata;
+    wire [15:0] outputData1, outputData2;
 
     // instantiate regFile
     regFile regFileTest (
         .clk(clk),
-        .indata(indata),
-        .write_reg(write_reg),
-        .out_reg(out_reg),
-        .outdata(outdata)
+        .inputData(inputData),
+        .DR(DR),
+        .SR1(SR1),
+        .SR2(SR2),
+        .outputData1(outputData1),
+        .outputData2(outputData2)
     );
 
     // clk gen (since clocked)
@@ -28,73 +30,48 @@ module regFile_tb;
     initial begin
         // initial state
         clk = 0;
-        indata = 0;
-        write_reg = 0;
-        out_reg = 0;
+        inputData = 0;
+        DR = 0;
+        SR1 = 0;
+        SR2 = 0;
 
-        // wait
-        #10;
+        // TEST1: Write 1 to R0, SR1 = R1, SR2 = R2
+        // NOTE: PASSED
+        #10 inputData = 1;
+        DR = 0;
+        SR1 = 1;
+        SR2 = 2;
+        $display("\nTEST1\n");
+        #5 $display("TEST1: outputData1: %d, outputData2: %d", outputData1, outputData2);
 
-        // write reg idx to each reg, verify reg written
-        indata = 16'h0;
-        write_reg = 3'h0;
-        out_reg = 3'h0;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
+        // TEST2: SR1 = R0, SR2 = R0, Write 500 to R0
+        // EXPECTED: PRE-WRITE: outputData1: 0, outputData2: 0
+        // PASSED
+        // EXPECTED: POST_WRITE: outputData1: 500, outputData2: 500
+        // NOT PASSED
+        #10 inputData = 500;
+        DR = 0;
+        SR1 = 0;
+        SR2 = 0;
+        $display("\nTEST2\n");
+        $display("PRE-WRITE: outputData1: %d, outputData2: %d", outputData1, outputData2);
+        #10 $display("POST-WRITE: outputData1: %d, outputData2: %d", outputData1, outputData2);
 
-        #10
-        indata = 16'h1;
-        write_reg = 3'h1;
-        out_reg = 3'h1;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
+        // TEST3: Write 300 to ALL registers, SR1 = SR2 = 0
+        $display("\nTEST3\n");
+        #10 inputData = 300;
+        DR = 0;
+        SR1 = 0;
+        SR2 = 0;
 
-        #10
-        indata = 16'h2;
-        write_reg = 3'h2;
-        out_reg = 3'h2;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
-
-        #10
-        indata = 16'h3;
-        write_reg = 3'h3;
-        out_reg = 3'h3;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
-
-        #10
-        indata = 16'h3;
-        write_reg = 3'h3;
-        out_reg = 3'h3;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
-
-        #10
-        indata = 16'h4;
-        write_reg = 3'h4;
-        out_reg = 3'h4;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
-
-        #10
-        indata = 16'h5;
-        write_reg = 3'h5;
-        out_reg = 3'h5;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
-
-        #10
-        indata = 16'h6;
-        write_reg = 3'h6;
-        out_reg = 3'h6;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
-
-        #10
-        indata = 16'h7;
-        write_reg = 3'h7;
-        out_reg = 3'h7;
-        $display("WRITE: %d -> R%d, OUT: %d", indata, write_reg, outdata);
-
-        $display("CHECK MAINTAIN STATE");
-
-        #10
-        out_reg = 3'h0;
-        $display("READ: R%d -> %d", out_reg, outdata);
-        $finish;
-        // check registers maintain state
-    end
+        #10 DR = 1;
+        #10 DR = 2;
+        #10 DR = 3;
+        #10 DR = 4;
+        #10 DR = 5;
+        #10 DR = 6;
+        #10 DR = 7;
+        #10 $display("ALL REGISTERS WRITTEN");
+        #10 $finish;
+   end
 endmodule
