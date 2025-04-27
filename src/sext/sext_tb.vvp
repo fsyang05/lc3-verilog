@@ -1,0 +1,80 @@
+#! /usr/bin/vvp
+:ivl_version "12.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 9;
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/system.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/va_math.vpi";
+S_0x55cbb4157e10 .scope module, "sext_tb" "sext_tb" 2 8;
+ .timescale -9 -9;
+v0x55cbb416e730_0 .var "in_4", 15 0;
+v0x55cbb416e7f0_0 .var "in_8", 15 0;
+v0x55cbb416e8c0_0 .net "out_4", 15 0, L_0x55cbb416f150;  1 drivers
+v0x55cbb416e9c0_0 .net "out_8", 15 0, L_0x55cbb416ecf0;  1 drivers
+S_0x55cbb4157fa0 .scope module, "sext_test_4" "sext" 2 17, 3 9 0, S_0x55cbb4157e10;
+ .timescale -9 -9;
+    .port_info 0 /INPUT 16 "in";
+    .port_info 1 /OUTPUT 16 "out";
+P_0x55cbb4158180 .param/l "N" 0 3 9, +C4<00000000000000000000000000000100>;
+v0x55cbb4146470_0 .net *"_ivl_10", 3 0, L_0x55cbb416f240;  1 drivers
+v0x55cbb416db30_0 .net *"_ivl_3", 0 0, L_0x55cbb416ef00;  1 drivers
+v0x55cbb416dc10_0 .net *"_ivl_4", 11 0, L_0x55cbb416eff0;  1 drivers
+v0x55cbb416dd00_0 .net "in", 15 0, v0x55cbb416e730_0;  1 drivers
+v0x55cbb416dde0_0 .net "out", 15 0, L_0x55cbb416f150;  alias, 1 drivers
+L_0x55cbb416ef00 .part v0x55cbb416e730_0, 3, 1;
+LS_0x55cbb416eff0_0_0 .concat [ 1 1 1 1], L_0x55cbb416ef00, L_0x55cbb416ef00, L_0x55cbb416ef00, L_0x55cbb416ef00;
+LS_0x55cbb416eff0_0_4 .concat [ 1 1 1 1], L_0x55cbb416ef00, L_0x55cbb416ef00, L_0x55cbb416ef00, L_0x55cbb416ef00;
+LS_0x55cbb416eff0_0_8 .concat [ 1 1 1 1], L_0x55cbb416ef00, L_0x55cbb416ef00, L_0x55cbb416ef00, L_0x55cbb416ef00;
+L_0x55cbb416eff0 .concat [ 4 4 4 0], LS_0x55cbb416eff0_0_0, LS_0x55cbb416eff0_0_4, LS_0x55cbb416eff0_0_8;
+L_0x55cbb416f150 .concat8 [ 4 12 0 0], L_0x55cbb416f240, L_0x55cbb416eff0;
+L_0x55cbb416f240 .part v0x55cbb416e730_0, 0, 4;
+S_0x55cbb416df70 .scope module, "sext_test_8" "sext" 2 14, 3 9 0, S_0x55cbb4157e10;
+ .timescale -9 -9;
+    .port_info 0 /INPUT 16 "in";
+    .port_info 1 /OUTPUT 16 "out";
+P_0x55cbb416e150 .param/l "N" 0 3 9, +C4<00000000000000000000000000001000>;
+v0x55cbb416e1f0_0 .net *"_ivl_10", 7 0, L_0x55cbb416ede0;  1 drivers
+v0x55cbb416e2f0_0 .net *"_ivl_3", 0 0, L_0x55cbb416ea90;  1 drivers
+v0x55cbb416e3d0_0 .net *"_ivl_4", 7 0, L_0x55cbb416ebb0;  1 drivers
+v0x55cbb416e4c0_0 .net "in", 15 0, v0x55cbb416e7f0_0;  1 drivers
+v0x55cbb416e5a0_0 .net "out", 15 0, L_0x55cbb416ecf0;  alias, 1 drivers
+L_0x55cbb416ea90 .part v0x55cbb416e7f0_0, 7, 1;
+LS_0x55cbb416ebb0_0_0 .concat [ 1 1 1 1], L_0x55cbb416ea90, L_0x55cbb416ea90, L_0x55cbb416ea90, L_0x55cbb416ea90;
+LS_0x55cbb416ebb0_0_4 .concat [ 1 1 1 1], L_0x55cbb416ea90, L_0x55cbb416ea90, L_0x55cbb416ea90, L_0x55cbb416ea90;
+L_0x55cbb416ebb0 .concat [ 4 4 0 0], LS_0x55cbb416ebb0_0_0, LS_0x55cbb416ebb0_0_4;
+L_0x55cbb416ecf0 .concat8 [ 8 8 0 0], L_0x55cbb416ede0, L_0x55cbb416ebb0;
+L_0x55cbb416ede0 .part v0x55cbb416e7f0_0, 0, 8;
+    .scope S_0x55cbb4157e10;
+T_0 ;
+    %vpi_call 2 20 "$display", "8 BIT SIGN EXTENSION" {0 0 0};
+    %delay 5, 0;
+    %pushi/vec4 128, 0, 16;
+    %store/vec4 v0x55cbb416e7f0_0, 0, 16;
+    %delay 5, 0;
+    %vpi_call 2 22 "$display", "IN: %b, OUT: %b", v0x55cbb416e7f0_0, v0x55cbb416e9c0_0 {0 0 0};
+    %delay 5, 0;
+    %pushi/vec4 127, 0, 16;
+    %store/vec4 v0x55cbb416e7f0_0, 0, 16;
+    %delay 5, 0;
+    %vpi_call 2 25 "$display", "IN: %b, OUT: %b", v0x55cbb416e7f0_0, v0x55cbb416e9c0_0 {0 0 0};
+    %vpi_call 2 27 "$display", "4 BIT SIGN EXTENSION" {0 0 0};
+    %delay 5, 0;
+    %pushi/vec4 8, 0, 16;
+    %store/vec4 v0x55cbb416e730_0, 0, 16;
+    %delay 5, 0;
+    %vpi_call 2 29 "$display", "IN: %b, OUT: %b", v0x55cbb416e730_0, v0x55cbb416e8c0_0 {0 0 0};
+    %delay 5, 0;
+    %pushi/vec4 7, 0, 16;
+    %store/vec4 v0x55cbb416e730_0, 0, 16;
+    %delay 5, 0;
+    %vpi_call 2 32 "$display", "IN: %b, OUT: %b", v0x55cbb416e730_0, v0x55cbb416e8c0_0 {0 0 0};
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "sext_tb.v";
+    "./sext.v";

@@ -11,8 +11,7 @@ module sext #(parameter N=8) (
     output [15:0] out
 );
 
-wire msb = in[N-1];
-assign out[15:N] = msb;
+assign out[15:N] = {16-N{in[N-1]}};
 assign out[N-1:0] = in;
 
 endmodule
